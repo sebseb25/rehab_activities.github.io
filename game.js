@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please enter a room name');
             return;
         }
+        // Check if room already exists
+        if (rooms[roomName]) {
+            alert('Room already exists. Choose a different name.');
+            return;
+        }
         rooms[roomName] = { players: [] };
         document.getElementById('room-name').value = ''; // Clear input
         alert(`Room "${roomName}" created!`);
@@ -86,6 +91,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for back button
     document.getElementById('back-to-home-btn').addEventListener('click', function() {
         document.getElementById('create-room-screen').classList.add('hidden');
+        document.getElementById('home-screen').classList.remove('hidden');
+    });
+
+    // Back button for join room screen
+    document.getElementById('back-to-home-btn-join').addEventListener('click', function() {
+        document.getElementById('join-room-screen').classList.add('hidden');
         document.getElementById('home-screen').classList.remove('hidden');
     });
 });
