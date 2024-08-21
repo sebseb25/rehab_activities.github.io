@@ -14,10 +14,7 @@
             display: none;
         }
         .room {
-            margin: 20px 0;
-        }
-        #room-list {
-            margin: 20px;
+            margin: 10px;
         }
     </style>
 </head>
@@ -27,10 +24,6 @@
     <div id="home-screen">
         <button id="create-room-option">Create Room</button>
         <button id="join-room-option">Join Room</button>
-        <div id="room-list" class="hidden">
-            <h2>Available Rooms</h2>
-            <div id="rooms"></div>
-        </div>
     </div>
 
     <div id="create-room-screen" class="hidden">
@@ -38,6 +31,11 @@
         <input type="text" id="room-name" placeholder="Room Name" required>
         <button id="create-room-btn">Create Room</button>
         <button id="back-to-home-btn">Back</button>
+    </div>
+
+    <div id="join-room-screen" class="hidden">
+        <h2>Available Rooms</h2>
+        <div id="rooms"></div>
     </div>
 
     <div id="game-room" class="hidden">
