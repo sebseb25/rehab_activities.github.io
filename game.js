@@ -12,10 +12,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for "Join Room" button on home screen
     document.getElementById('join-room-option').addEventListener('click', function() {
         document.getElementById('home-screen').classList.add('hidden');
+        document.getElementById('join-room-screen').classList.remove('hidden');
         showAvailableRooms();
     });
 
-    // Show available rooms
+    // Function to display available rooms
     function showAvailableRooms() {
         const roomListDiv = document.getElementById('rooms');
         roomListDiv.innerHTML = ''; // Clear previous rooms
@@ -28,7 +29,10 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             roomListDiv.appendChild(roomButton);
         }
-        document.getElementById('room-list').classList.remove('hidden');
+
+        if (Object.keys(rooms).length === 0) {
+            roomListDiv.innerHTML = '<p>No rooms available.</p>';
+        }
     }
 
     // Event listener for creating a room
@@ -40,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         rooms[roomName] = { players: [] };
         document.getElementById('room-name').value = ''; // Clear input
-        alert(`Room "${roomName}" created! You can share this room name with others.`);
+        alert(`Room "${roomName}" created!`);
     });
 
     // Function to join a room
@@ -55,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         currentPlayer = playerName;
         currentRoomName = roomName;
 
-        document.getElementById('room-list').classList.add('hidden');
+        document.getElementById('join-room-screen').classList.add('hidden');
         document.getElementById('game-room').classList.remove('hidden');
         document.getElementById('room-title').textContent = `Room: ${roomName}`;
     }
