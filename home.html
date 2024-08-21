@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who is the Spy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .hidden {
+            display: none;
+        }
+        .room {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Who is the Spy</h1>
+
+    <div id="game-setup">
+        <input type="text" id="room-name" placeholder="Room Name">
+        <button onclick="createRoom()">Create Room</button>
+    </div>
+
+    <div id="game-room" class="hidden">
+        <h2 id="room-title"></h2>
+        <div id="players">
+            <input type="text" id="player-name" placeholder="Your Name">
+            <button onclick="joinRoom()">Join Room</button>
+        </div>
+
+        <div id="game-controls" class="hidden">
+            <textarea id="message" placeholder="Enter your message"></textarea>
+            <button onclick="startGame()">Start Game</button>
+        </div>
+    </div>
+
+    <div id="message-board" class="hidden">
+        <h3>Messages:</h3>
+        <div id="messages"></div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
