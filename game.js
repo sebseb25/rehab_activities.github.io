@@ -43,13 +43,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for joining a room
     document.getElementById('join-room-btn').addEventListener('click', function() {
         console.log("Join Room button clicked");
-        const roomCode = document.getElementById('join-room-code').value.toUpperCase();
-        const playerName = document.getElementById('player-name').value;
+        const roomCode = document.getElementById('join-room-code').value.trim().toUpperCase();
+        const playerName = document.getElementById('player-name').value.trim();
         console.log("Attempting to join room with code:", roomCode);  // Debugging log
 
-        if (!roomCode || !rooms[roomCode]) {
-            alert('Invalid room code');
-            console.log("Invalid room code provided");  // Debugging log
+        // Check for empty room code or player name
+        if (!roomCode) {
+            alert('Please enter a room code');
             return;
         }
         if (!playerName) {
@@ -57,6 +57,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Check if the room code is valid
+        if (!(roomCode in rooms)) {
+            alert('Invalid room code');
+            console.log("Invalid room code provided:", roomCode);  // Debugging log
+            return;
+        }
+
+        // If valid, add player to the room
         rooms[roomCode].players.push(playerName);
         currentPlayer = playerName;
         currentRoomCode = roomCode;
@@ -80,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for sending a message
     document.getElementById('send-message-btn').addEventListener('click', function() {
         console.log("Send Message button clicked");
-        const message = document.getElementById('message').value;
+        const message = document.getElementById('message').value.trim();
         if (!message) {
             alert('Please enter a message');
             return;
