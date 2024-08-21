@@ -50,6 +50,8 @@ document.addEventListener('DOMContentLoaded', function() {
         rooms[roomName] = { players: [] };
         document.getElementById('room-name').value = ''; // Clear input
         alert(`Room "${roomName}" created!`);
+        document.getElementById('create-room-screen').classList.add('hidden');
+        document.getElementById('home-screen').classList.remove('hidden'); // Return to home screen
     });
 
     // Function to join a room
@@ -88,8 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
         messageDiv.appendChild(p);
     }
 
-    // Event listener for back button
-    document.getElementById('back-to-home-btn').addEventListener('click', function() {
+    // Event listener for back button in create room screen
+    document.getElementById('back-to-home-btn-create').addEventListener('click', function() {
         document.getElementById('create-room-screen').classList.add('hidden');
         document.getElementById('home-screen').classList.remove('hidden');
     });
