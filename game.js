@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for creating a room
     document.getElementById('create-room-btn').addEventListener('click', function() {
         console.log("Create Room button clicked");
-        const roomName = document.getElementById('room-name').value;
+        const roomName = document.getElementById('room-name').value.trim();
         if (!roomName) {
             alert('Please enter a room name');
             return;
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Check if the room code is valid
-        if (!(roomCode in rooms)) {
+        if (!rooms.hasOwnProperty(roomCode)) {
             alert('Invalid room code');
             console.log("Invalid room code provided:", roomCode);  // Debugging log
             return;
