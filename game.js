@@ -34,6 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const roomCode = generateRoomCode();
         rooms[roomCode] = { name: roomName, players: [] };
         currentRoomCode = roomCode;
+        console.log("Room created with code:", roomCode);  // Debugging log
+        console.log("Rooms object:", rooms);  // Debugging log
         document.getElementById('room-code-display').textContent = roomCode;
         document.getElementById('start-game-btn').classList.remove('hidden');
     });
@@ -43,14 +45,18 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("Join Room button clicked");
         const roomCode = document.getElementById('join-room-code').value.toUpperCase();
         const playerName = document.getElementById('player-name').value;
+        console.log("Attempting to join room with code:", roomCode);  // Debugging log
+
         if (!roomCode || !rooms[roomCode]) {
             alert('Invalid room code');
+            console.log("Invalid room code provided");  // Debugging log
             return;
         }
         if (!playerName) {
             alert('Please enter your name');
             return;
         }
+
         rooms[roomCode].players.push(playerName);
         currentPlayer = playerName;
         currentRoomCode = roomCode;
@@ -59,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('game-room').classList.remove('hidden');
         document.getElementById('room-title').textContent = `Room: ${rooms[roomCode].name}`;
         document.getElementById('game-controls').classList.remove('hidden');
+        console.log(`Player ${playerName} joined room: ${rooms[roomCode].name}`);  // Debugging log
     });
 
     // Event listener for starting the game
