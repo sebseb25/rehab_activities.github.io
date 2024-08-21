@@ -43,11 +43,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Confirm joining the room
+        const confirmation = confirm(`Are you sure you want to join the room with code ${roomCode} as ${playerName}?`);
+        if (!confirmation) return;
+
+        // Validate room code
         if (!rooms[roomCode]) {
             alert('Invalid room code');
             return;
         }
 
+        // Add player to the room
         rooms[roomCode].players.push(playerName);
         currentPlayer = playerName;
         currentRoomCode = roomCode;
