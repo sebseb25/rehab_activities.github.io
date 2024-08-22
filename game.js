@@ -110,9 +110,9 @@ function listenForUpdates(roomId) {
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
                 // Only show message if the user is not the spy
-                if (currentUser !== spy) {
+                if (currentUser !== data.spy) {
                     // Here you can handle displaying the message in your UI instead of an alert
-                    console.log(`New message: ${data.message}`); // Simulate sending message to non-spy players
+                    console.log(`New message: ${data.message}`); // Display the message in the console for testing
                 }
             } else {
                 console.warn("Message data is undefined.");
