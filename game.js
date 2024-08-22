@@ -28,6 +28,9 @@ document.getElementById('create-room').addEventListener('click', async () => {
     document.getElementById('room-display').innerText = roomName;
     document.getElementById('room-setup').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
+
+    // Listen for updates after room creation
+    listenForUpdates(roomId);
 });
 
 // Join Room
@@ -44,6 +47,9 @@ document.getElementById('join-room').addEventListener('click', async () => {
         document.getElementById('room-display').innerText = roomName;
         document.getElementById('room-setup').classList.add('hidden');
         document.getElementById('game').classList.remove('hidden');
+
+        // Listen for updates after joining the room
+        listenForUpdates(roomId);
     } else {
         alert('Room not found!');
     }
@@ -82,10 +88,10 @@ document.getElementById('send-message').addEventListener('click', async () => {
     });
 });
 
-// Listen for updates
-db.collection('rooms').doc(roomId).onSnapshot((doc) => {
-    const data = doc.data();
-    if (data.message && data.spy) {
-        alert(`New message: ${data.message}`);
-    }
-});
+// Listen for updates function
+function listenForUpdates(roomId) {
+    db.collection('rooms').doc(roomId).onSnapshot((doc) => {
+        if (doc.exists) {  // Check if the document exists
+            const data = doc.data();
+            if (data && data.message && data.spy) {
+                alert(`New
