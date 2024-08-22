@@ -1,6 +1,6 @@
 import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
-const db = getFirestore(); // Initialize Firestore
+const db = getFirestore(); // Ensure Firestore is initialized with the correct app
 
 let currentPlayer = null;
 let currentRoomName = null;
