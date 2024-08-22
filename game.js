@@ -1,6 +1,6 @@
 import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
-const db = getFirestore(); // Ensure Firestore is initialized with the correct app
+const db = getFirestore(); // Initialize Firestore
 
 let currentPlayer = null;
 let currentRoomName = null;
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('message').value = ''; // Clear message input
     });
 
+    // Function to display messages
     function displayMessage(player, message) {
         const messageDiv = document.getElementById('messages');
         const p = document.createElement('p');
