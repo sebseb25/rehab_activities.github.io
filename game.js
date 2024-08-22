@@ -116,6 +116,9 @@ function listenForUpdates(roomId) {
                 // Notify all players except the spy of new messages
                 if (currentUser !== spy) {
                     console.log(`New message: ${data.message}`); // Display the message in your UI
+                } else {
+                    // Optional: Log for spy to show they won't see messages
+                    console.log("You are the spy and won't see the messages.");
                 }
             } else {
                 console.warn("Message data is undefined.");
