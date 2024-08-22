@@ -1,6 +1,6 @@
 import { getDatabase, ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js";
 
-const database = getDatabase(); // Ensure the database instance is correctly initialized
+const database = getDatabase(); // Get the database instance after the app has been initialized
 
 let currentPlayer = null;
 let currentRoomName = null;
@@ -142,4 +142,3 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('home-screen').classList.remove('hidden');
     });
 });
-
