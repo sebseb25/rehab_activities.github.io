@@ -109,31 +109,4 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Send message to Firestore
         const messagesRef = collection(db, "rooms", currentRoomName, "messages");
-        await addDoc(messagesRef, {
-            player: currentPlayer,
-            message: message
-        });
-
-        document.getElementById('message').value = ''; // Clear message input
-    });
-
-    // Function to display messages
-    function displayMessage(player, message) {
-        const messageDiv = document.getElementById('messages');
-        const p = document.createElement('p');
-        p.textContent = `${player}: ${message}`;
-        messageDiv.appendChild(p);
-    }
-
-    // Event listener for back button in create room screen
-    document.getElementById('back-to-home-btn-create').addEventListener('click', function() {
-        document.getElementById('create-room-screen').classList.add('hidden');
-        document.getElementById('home-screen').classList.remove('hidden');
-    });
-
-    // Back button for join room screen
-    document.getElementById('back-to-home-btn-join').addEventListener('click', function() {
-        document.getElementById('join-room-screen').classList.add('hidden');
-        document.getElementById('home-screen').classList.remove('hidden');
-    });
-});
+       
