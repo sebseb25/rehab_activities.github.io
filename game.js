@@ -6,20 +6,17 @@ let currentPlayer = null;
 let currentRoomName = null;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Event listener for "Create Room" button on home screen
     document.getElementById('create-room-option').addEventListener('click', function() {
         document.getElementById('home-screen').classList.add('hidden');
         document.getElementById('create-room-screen').classList.remove('hidden');
     });
 
-    // Event listener for "Join Room" button on home screen
     document.getElementById('join-room-option').addEventListener('click', function() {
         document.getElementById('home-screen').classList.add('hidden');
         document.getElementById('join-room-screen').classList.remove('hidden');
         showAvailableRooms();
     });
 
-    // Function to display available rooms
     async function showAvailableRooms() {
         const roomListDiv = document.getElementById('rooms');
         roomListDiv.innerHTML = ''; // Clear previous rooms
@@ -41,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Event listener for creating a room
     document.getElementById('create-room-btn').addEventListener('click', async function() {
         const roomName = document.getElementById('room-name').value.trim();
         if (!roomName) {
@@ -49,19 +45,17 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Create room in Firestore
         try {
             await addDoc(collection(db, "rooms"), { players: [] });
             alert(`Room "${roomName}" created!`);
             document.getElementById('room-name').value = ''; // Clear input
             document.getElementById('create-room-screen').classList.add('hidden');
-            document.getElementById('home-screen').classList.remove('hidden'); // Return to home screen
+            document.getElementById('home-screen').classList.remove('hidden');
         } catch (e) {
             alert('Error creating room: ' + e.message);
         }
     });
 
-    // Function to join a room
     async function joinRoom(roomName) {
         const playerName = prompt('Enter your name:');
         if (!playerName) {
@@ -69,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Add player to the room in Firestore
         const roomRef = doc(db, "rooms", roomName);
         await updateDoc(roomRef, {
             players: arrayUnion(playerName)
@@ -82,11 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('game-room').classList.remove('hidden');
         document.getElementById('room-title').textContent = `Room: ${roomName}`;
 
-        // Listen for messages in the room
         listenForMessages(roomName);
     }
 
-    // Listen for messages in the room
     function listenForMessages(roomName) {
         const messagesRef = collection(db, "rooms", roomName, "messages");
         onSnapshot(messagesRef, (snapshot) => {
@@ -99,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Event listener for sending a message
     document.getElementById('send-message-btn').addEventListener('click', async function() {
         const message = document.getElementById('message').value.trim();
         if (!message) {
@@ -107,7 +97,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Send message to Firestore
         const messagesRef = collection(db, "rooms", currentRoomName, "messages");
         await addDoc(messagesRef, {
             player: currentPlayer,
@@ -117,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('message').value = ''; // Clear message input
     });
 
-    // Function to display messages
     function displayMessage(player, message) {
         const messageDiv = document.getElementById('messages');
         const p = document.createElement('p');
@@ -125,13 +113,11 @@ document.addEventListener('DOMContentLoaded', function() {
         messageDiv.appendChild(p);
     }
 
-    // Event listener for back button in create room screen
     document.getElementById('back-to-home-btn-create').addEventListener('click', function() {
         document.getElementById('create-room-screen').classList.add('hidden');
         document.getElementById('home-screen').classList.remove('hidden');
     });
 
-    // Back button for join room screen
     document.getElementById('back-to-home-btn-join').addEventListener('click', function() {
         document.getElementById('join-room-screen').classList.add('hidden');
         document.getElementById('home-screen').classList.remove('hidden');
