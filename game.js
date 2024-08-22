@@ -1,6 +1,19 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
-const db = getFirestore(); // Initialize Firestore
+// Your web app's Firebase configuration
+const firebaseConfig = {
+    apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
+    authDomain: "rehab-activities.firebaseapp.com",
+    projectId: "rehab-activities",
+    storageBucket: "rehab-activities.appspot.com",
+    messagingSenderId: "96878771621",
+    appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app); // Initialize Firestore
 
 let currentPlayer = null;
 let currentRoomName = null;
