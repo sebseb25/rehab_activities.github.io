@@ -57,20 +57,18 @@
             projectId: "rehab-activities",
             storageBucket: "rehab-activities.appspot.com",
             messagingSenderId: "96878771621",
-            appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4c"
+            appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
         };
 
         // Initialize Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
         import { getFirestore } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
-        const app = initializeApp(firebaseConfig);
+        const app = initializeApp(firebaseConfig); // Initialize the Firebase app with config
         const db = getFirestore(app); // Initialize Firestore
 
         // Include game.js here or as a separate module
         import './game.js';
     </script>
-    
-    <script type="module" src="game.js"></script>
 </body>
 </html>
