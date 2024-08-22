@@ -1,6 +1,9 @@
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #1b1b1b;
+    background-image: url('https://wallpaperaccess.com/full/2917956.jpg');
+    background-size: cover; /* Ensures the background image covers the entire viewport */
+    background-position: center; /* Centers the background image */
+    background-repeat: no-repeat; /* Prevents the background image from repeating */
     color: #f2f2f2;
     margin: 0;
     padding: 0;
