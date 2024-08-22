@@ -1,10 +1,9 @@
-let currentPlayer = null;
-let currentRoomName = null;
-
-// Add the following line to include Firebase and the database reference
 import { getDatabase, ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js";
 
-const database = getDatabase();
+const database = getDatabase(); // Ensure the database instance is correctly initialized
+
+let currentPlayer = null;
+let currentRoomName = null;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Event listener for "Create Room" button on home screen
@@ -128,16 +127,4 @@ document.addEventListener('DOMContentLoaded', function() {
         const messageDiv = document.getElementById('messages');
         const p = document.createElement('p');
         p.textContent = `${player}: ${message}`;
-        messageDiv.appendChild(p);
-    }
-
-    // Event listener for back button in create room screen
-    document.getElementById('back-to-home-btn-create').addEventListener('click', function() {
-        document.getElementById('create-room-screen').classList.add('hidden');
-        document.getElementById('home-screen').classList.remove('hidden');
-    });
-
-    // Back button for join room screen
-    document.getElementById('back-to-home-btn-join').addEventListener('click', function() {
-        document.getElementById('join-room-screen').classList.add('hidden');
-        document.getElementById('hom
+        
