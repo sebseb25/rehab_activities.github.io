@@ -8,25 +8,21 @@
 <body>
     <h1>Who's the Spy</h1>
     
-    <!-- Create Room Section -->
     <div id="createRoom">
         <button id="createRoomBtn">Create Room</button>
         <p id="roomCode"></p>
     </div>
     
-    <!-- Join Room Section -->
     <div id="joinRoom">
         <input type="text" id="nameInput" placeholder="Enter Your Name">
         <input type="text" id="roomInput" placeholder="Enter Room Code">
         <button id="joinRoomBtn">Join Room</button>
     </div>
     
-    <!-- Start Game Button (hidden initially) -->
     <div id="startGame" style="display:none;">
         <button id="startGameBtn">Start Game</button>
     </div>
     
-    <!-- Send Message Section (hidden initially) -->
     <div id="sendMessage" style="display:none;">
         <input type="text" id="messageInput" placeholder="Enter Message">
         <button id="sendMessageBtn">Send Message</button>
@@ -36,7 +32,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js"></script>
-
     
     <!-- Reference to the main.js file -->
     <script src="main.js"></script>
