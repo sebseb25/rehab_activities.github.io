@@ -1,12 +1,14 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
-    authDomain: "rehab-activities.firebaseapp.com",
-    projectId: "rehab-activities",
-    storageBucket: "rehab-activities.appspot.com",
-    messagingSenderId: "96878771621",
-    appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4c"
+  apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
+  authDomain: "rehab-activities.firebaseapp.com",
+  projectId: "rehab-activities",
+  storageBucket: "rehab-activities.appspot.com",
+  messagingSenderId: "96878771621",
+  appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4c",
+  measurementId: "G-15XKPPZ721"
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
