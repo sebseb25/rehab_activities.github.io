@@ -1,8 +1,4 @@
-// Import the Firebase libraries
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDoc, updateDoc, arrayUnion, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/9.9.0/firebase-firestore.js";
-
-// Firebase configuration
+// Initialize Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
     authDomain: "rehab-activities.firebaseapp.com",
@@ -11,22 +7,19 @@ const firebaseConfig = {
     messagingSenderId: "96878771621",
     appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
 };
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
 let roomId;
 let isGameStarted = false; // Flag to check if the game has started
-let playerName; // Store the player's name
-let spyName; // Store the spy's name
+let spy = ''; // Variable to hold the spy's identity
 
 // Create Room
 document.getElementById('create-room').addEventListener('click', async () => {
-    playerName = prompt("Enter your name:");
     const roomName = document.getElementById('room-name').value;
+    const playerName = prompt("Enter your name:");
 
-    const roomRef = await addDoc(collection(db, 'rooms'), {
+    const roomRef = await db.collection('rooms').add({
         name: roomName,
         players: [playerName], // Add the creator to players
         message: '',
@@ -36,22 +29,28 @@ document.getElementById('create-room').addEventListener('click', async () => {
     document.getElementById('room-display').innerText = roomName;
     document.getElementById('room-setup').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
+
+    // Listen for updates after room creation
+    listenForUpdates(roomId);
 });
 
 // Join Room
 document.getElementById('join-room').addEventListener('click', async () => {
-    playerName = prompt("Enter your name:");
     const roomName = document.getElementById('room-name').value;
-    const roomSnapshot = await getDocs(collection(db, 'rooms')).where('name', '==', roomName);
+    const roomSnapshot = await db.collection('rooms').where('name', '==', roomName).get();
     if (!roomSnapshot.empty) {
         roomId = roomSnapshot.docs[0].id;
+        const playerName = prompt("Enter your name:");
         const roomRef = db.collection('rooms').doc(roomId);
-        await updateDoc(roomRef, {
-            players: arrayUnion(playerName) // Add the player to the array
+        await roomRef.update({
+            players: firebase.firestore.FieldValue.arrayUnion(playerName) // Add the player to the array
         });
         document.getElementById('room-display').innerText = roomName;
         document.getElementById('room-setup').classList.add('hidden');
         document.getElementById('game').classList.remove('hidden');
+
+        // Listen for updates after joining the room
+        listenForUpdates(roomId);
     } else {
         alert('Room not found!');
     }
@@ -60,18 +59,17 @@ document.getElementById('join-room').addEventListener('click', async () => {
 // Start Game
 document.getElementById('start-game').addEventListener('click', async () => {
     const roomRef = db.collection('rooms').doc(roomId);
-    const playersSnapshot = await getDoc(roomRef);
+    const playersSnapshot = await roomRef.get();
     const players = playersSnapshot.data().players;
     const spyIndex = Math.floor(Math.random() * players.length);
-    spyName = players[spyIndex]; // Set the spy's name
+    spy = players[spyIndex];
 
-    await updateDoc(roomRef, {
-        spy: spyName,
+    await roomRef.update({
+        spy: spy,
         message: ''
     });
 
-    // Notify all players
-    alert(`Spy is selected. Start sending messages.`);
+    // Removed notification of who the spy is
     isGameStarted = true; // Set the flag to true when the game starts
     document.getElementById('message-container').classList.remove('hidden');
 });
@@ -85,19 +83,33 @@ document.getElementById('send-message').addEventListener('click', async () => {
 
     const message = document.getElementById('message').value;
     const roomRef = db.collection('rooms').doc(roomId);
-    await updateDoc(roomRef, {
+    await roomRef.update({
         message: message
+    });
+    
+    // Notify all players except the spy
+    const playersSnapshot = await roomRef.get();
+    const players = playersSnapshot.data().players;
+    players.forEach(player => {
+        if (player !== spy) {
+            alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
+        }
     });
 });
 
-// Listen for updates
-const roomRef = db.collection('rooms').doc(roomId);
-onSnapshot(roomRef, (doc) => {
-    const data = doc.data();
-    if (data.message) {
-        // Notify players
-        if (playerName !== spyName) {
-            console.log(`New message: ${data.message}`); // Log the message for non-spies
+// Listen for updates function
+function listenForUpdates(roomId) {
+    db.collection('rooms').doc(roomId).onSnapshot((doc) => {
+        if (doc.exists) {  // Check if the document exists
+            const data = doc.data();
+            // Safely check if 'message' exists before accessing it
+            if (data && typeof data.message !== 'undefined') {
+                alert(`New message: ${data.message}`);
+            } else {
+                console.warn("Message data is undefined.");
+            }
+        } else {
+            console.error("No such document!");
         }
-    }
-});
+    });
+}
