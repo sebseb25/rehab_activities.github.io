@@ -7,10 +7,11 @@ const firebaseConfig = {
     messagingSenderId: "96878771621",
     appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
 };
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 let roomId;
+let isGameStarted = false; // Flag to check if the game has started
 
 // Create Room
 document.getElementById('create-room').addEventListener('click', async () => {
@@ -63,11 +64,17 @@ document.getElementById('start-game').addEventListener('click', async () => {
 
     // Notify all players
     alert(`Spy is ${spy}`);
+    isGameStarted = true; // Set the flag to true when the game starts
     document.getElementById('message-container').classList.remove('hidden');
 });
 
 // Send Message
 document.getElementById('send-message').addEventListener('click', async () => {
+    if (!isGameStarted) {
+        alert("The game hasn't started yet!");
+        return;
+    }
+
     const message = document.getElementById('message').value;
     const roomRef = db.collection('rooms').doc(roomId);
     await roomRef.update({
