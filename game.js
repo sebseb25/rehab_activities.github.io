@@ -109,7 +109,7 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                // Only show message if the user is not the spy
+                // Only show message if the user is not the spy and not the sender
                 if (currentUser !== data.spy) {
                     // Here you can handle displaying the message in your UI instead of an alert
                     console.log(`New message: ${data.message}`); // Display the message in the console for testing
