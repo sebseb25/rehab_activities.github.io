@@ -54,6 +54,7 @@
         const firebaseConfig = {
             apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
             authDomain: "rehab-activities.firebaseapp.com",
+            databaseURL: "https://rehab-activities.firebaseio.com",
             projectId: "rehab-activities",
             storageBucket: "rehab-activities.appspot.com",
             messagingSenderId: "96878771621",
@@ -61,16 +62,14 @@
         };
 
         // Initialize Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-app.js";
+        import { getDatabase } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js";
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app); // Initialize Firestore
+        const database = getDatabase(app);
 
-        // Include game.js here or as a separate module
+        // Include game.js here
         import './game.js';
     </script>
-    
-    <script type="module" src="game.js"></script>
 </body>
 </html>
