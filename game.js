@@ -71,8 +71,12 @@ document.getElementById('start-game').addEventListener('click', async () => {
 
     // Filter out the game creator from the list of possible spies
     const possibleSpies = players.filter(player => player !== currentUser);
-    const spyIndex = Math.floor(Math.random() * possibleSpies.length);
-    spy = possibleSpies[spyIndex];
+    
+    // Randomly select a spy
+    if (possibleSpies.length > 0) {
+        const spyIndex = Math.floor(Math.random() * possibleSpies.length);
+        spy = possibleSpies[spyIndex];
+    }
 
     await roomRef.update({
         spy: spy,
@@ -98,13 +102,14 @@ document.getElementById('send-message').addEventListener('click', async () => {
         message: message
     });
 
-    // Notify all players except the spy
+    // Notify all players except the spy and the sender
     const playersSnapshot = await roomRef.get();
     const players = playersSnapshot.data().players;
 
     // Loop through players to simulate sending messages
     players.forEach(player => {
-        if (player !== spy && player !== currentUser) { // Only notify non-spy players and not the sender
+        // Only notify non-spy players and not the sender
+        if (player !== spy && player !== currentUser) {
             alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
         }
     });
@@ -120,9 +125,9 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                // Only show message if the user is not the spy and not the sender
-                if (data.spy !== spy && currentUser !== spy) {
-                    alert(`New message: ${data.message}`);
+                // Only show message if the user is not the spy
+                if (currentUser !== spy) {
+                    alert(`New message: ${data.message}`); // Notify non-spy players of new messages
                 }
             } else {
                 console.warn("Message data is undefined.");
