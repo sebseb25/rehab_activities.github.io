@@ -2,6 +2,7 @@
 const firebaseConfig = {
     apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
     authDomain: "rehab-activities.firebaseapp.com",
+    databaseURL: "https://rehab-activities-default-rtdb.firebaseio.com/",
     projectId: "rehab-activities",
     storageBucket: "rehab-activities.appspot.com",
     messagingSenderId: "96878771621",
@@ -9,9 +10,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db = firebase.firestore();
+const db = firebase.database();
 
 // User Authentication
 auth.signInAnonymously().catch((error) => {
@@ -33,7 +34,7 @@ document.getElementById('createRoomBtn').addEventListener('click', () => {
     const roomCode = generateRoomCode();
     const userId = auth.currentUser.uid;
 
-    db.collection('rooms').doc(roomCode).set({
+    db.ref('rooms/' + roomCode).set({
         creator: userId,
         participants: [{ userId: userId, name: "Room Creator" }],
         spyAssigned: false
@@ -54,16 +55,14 @@ document.getElementById('joinRoomBtn').addEventListener('click', () => {
         return;
     }
 
-    db.collection('rooms').doc(roomCode).get().then((doc) => {
-        if (doc.exists) {
-            const roomData = doc.data();
+    db.ref('rooms/' + roomCode).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+            const roomData = snapshot.val();
             const newParticipant = { userId: userId, name: userName };
 
             if (!roomData.participants.some(participant => participant.userId === userId)) {
                 roomData.participants.push(newParticipant);
-                db.collection('rooms').doc(roomCode).update({
-                    participants: roomData.participants
-                });
+                db.ref('rooms/' + roomCode + '/participants').set(roomData.participants);
             }
 
             document.getElementById('sendMessage').style.display = 'block';
@@ -93,13 +92,13 @@ document.getElementById('startGameBtn').addEventListener('click', () => {
     const roomCode = document.getElementById('roomCode').textContent.split(': ')[1];
     const userId = auth.currentUser.uid;
 
-    db.collection('rooms').doc(roomCode).get().then((doc) => {
-        if (doc.exists && doc.data().creator === userId && !doc.data().spyAssigned) {
-            const participants = doc.data().participants;
+    db.ref('rooms/' + roomCode).once('value').then((snapshot) => {
+        if (snapshot.exists() && snapshot.val().creator === userId && !snapshot.val().spyAssigned) {
+            const participants = snapshot.val().participants;
             const spyIndex = Math.floor(Math.random() * participants.length);
             const spyId = participants[spyIndex].userId;
 
-            db.collection('rooms').doc(roomCode).update({
+            db.ref('rooms/' + roomCode).update({
                 spyId: spyId,
                 spyAssigned: true
             });
@@ -113,20 +112,20 @@ document.getElementById('sendMessageBtn').addEventListener('click', () => {
     const message = document.getElementById('messageInput').value;
     const userId = auth.currentUser.uid;
 
-    db.collection('rooms').doc(roomCode).get().then((doc) => {
-        if (doc.exists) {
-            const roomData = doc.data();
+    db.ref('rooms/' + roomCode).once('value').then((snapshot) => {
+        if (snapshot.exists()) {
+            const roomData = snapshot.val();
             const spyId = roomData.spyId;
             const sender = roomData.participants.find(participant => participant.userId === userId);
 
             roomData.participants.forEach(participant => {
                 if (participant.userId !== spyId) {
-                    db.collection('messages').add({
+                    db.ref('messages').push({
                         roomCode: roomCode,
                         userId: participant.userId,
                         senderName: sender.name,
                         message: message,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
                 }
             });
@@ -135,13 +134,8 @@ document.getElementById('sendMessageBtn').addEventListener('click', () => {
 });
 
 // Listen for and display messages
-db.collection('messages').where("userId", "==", auth.currentUser.uid)
-.onSnapshot((snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-        if (change.type === "added") {
-            const messageData = change.doc.data();
-            console.log(`${messageData.senderName}: ${messageData.message}`);
-            // Display the message on the UI
-        }
-    });
+db.ref('messages').on('child_added', (data) => {
+    const messageData = data.val();
+    console.log(`${messageData.senderName}: ${messageData.message}`);
+    // Display the message on the UI as needed
 });
