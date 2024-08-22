@@ -68,8 +68,7 @@ document.getElementById('start-game').addEventListener('click', async () => {
         message: ''
     });
 
-    // Notify all players
-    alert(`Spy is ${spy}`);
+    // Remove the notification of who the spy is
     isGameStarted = true; // Set the flag to true when the game starts
     document.getElementById('message-container').classList.remove('hidden');
 });
