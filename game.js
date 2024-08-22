@@ -109,10 +109,13 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                // Only show message if the user is not the spy and not the sender
+                // Check if the current user is not the spy
                 if (currentUser !== data.spy) {
-                    // Here you can handle displaying the message in your UI instead of an alert
-                    console.log(`New message: ${data.message}`); // Display the message in the console for testing
+                    // Display the message in the UI
+                    const messagesDiv = document.getElementById('messages');
+                    const newMessage = document.createElement('div');
+                    newMessage.textContent = `New message: ${data.message}`;
+                    messagesDiv.appendChild(newMessage);
                 }
             } else {
                 console.warn("Message data is undefined.");
@@ -122,3 +125,4 @@ function listenForUpdates(roomId) {
         }
     });
 }
+
