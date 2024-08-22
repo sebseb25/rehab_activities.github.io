@@ -7,6 +7,7 @@ const firebaseConfig = {
     messagingSenderId: "96878771621",
     appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
 };
+
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -104,7 +105,8 @@ document.getElementById('send-message').addEventListener('click', async () => {
 
     // Loop through players to simulate sending messages
     players.forEach(player => {
-        if (player !== spy && player !== currentUser) { // Only notify non-spy players and not the sender
+        // Only notify non-spy players and not the sender
+        if (player !== spy && player !== currentUser) {
             alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
         }
     });
@@ -121,7 +123,7 @@ function listenForUpdates(roomId) {
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
                 // Only show message if the user is not the spy and not the sender
-                if (data.spy !== spy && currentUser !== spy) {
+                if (currentUser !== spy) {
                     alert(`New message: ${data.message}`);
                 }
             } else {
