@@ -103,6 +103,9 @@ document.getElementById('send-message').addEventListener('click', async () => {
     const playersSnapshot = await roomRef.get();
     const players = playersSnapshot.data().players;
 
+    // Clear the message input after sending
+    document.getElementById('message').value = '';
+
     // Loop through players to simulate sending messages
     players.forEach(player => {
         // Only notify non-spy players and not the sender
@@ -110,9 +113,6 @@ document.getElementById('send-message').addEventListener('click', async () => {
             alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
         }
     });
-
-    // Clear the message input after sending
-    document.getElementById('message').value = '';
 });
 
 // Listen for updates function
@@ -122,8 +122,8 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                // Only show message if the user is not the spy
-                if (currentUser !== spy) {
+                // Only show message if the user is not the spy and not the sender
+                if (currentUser !== spy && currentUser !== data.sender) {
                     alert(`New message: ${data.message}`);
                 }
             } else {
