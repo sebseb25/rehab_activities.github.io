@@ -49,4 +49,26 @@
         </div>
     </div>
 
-    <script type="mod
+    <script type="module">
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
+            authDomain: "rehab-activities.firebaseapp.com",
+            projectId: "rehab-activities",
+            storageBucket: "rehab-activities.appspot.com",
+            messagingSenderId: "96878771621",
+            appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
+        };
+
+        // Initialize Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app); // Initialize Firestore
+
+        // Import the game.js module here
+        import './game.js';
+    </script>
+</body>
+</html>
