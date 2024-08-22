@@ -7,7 +7,6 @@ const firebaseConfig = {
     messagingSenderId: "96878771621",
     appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
 };
-
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
@@ -99,20 +98,19 @@ document.getElementById('send-message').addEventListener('click', async () => {
         message: message
     });
 
-    // Clear the message input after sending
-    document.getElementById('message').value = '';
-
-    // Notify all players except the spy and the sender
+    // Notify all players except the spy
     const playersSnapshot = await roomRef.get();
     const players = playersSnapshot.data().players;
 
     // Loop through players to simulate sending messages
     players.forEach(player => {
-        // Only notify non-spy players and not the sender
-        if (player !== spy && player !== currentUser) {
+        if (player !== spy && player !== currentUser) { // Only notify non-spy players and not the sender
             alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
         }
     });
+
+    // Clear the message input after sending
+    document.getElementById('message').value = '';
 });
 
 // Listen for updates function
@@ -123,7 +121,7 @@ function listenForUpdates(roomId) {
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
                 // Only show message if the user is not the spy and not the sender
-                if (currentUser !== spy) {
+                if (data.spy !== spy && currentUser !== spy) {
                     alert(`New message: ${data.message}`);
                 }
             } else {
