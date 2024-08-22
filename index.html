@@ -3,52 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Who is the Spy</title>
+    <title>Who's the Spy</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
     <style>
+        /* Add your styles here */
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
         }
         .hidden {
             display: none;
         }
-        .room {
-            margin: 10px;
-        }
     </style>
 </head>
 <body>
-    <h1>Who is the Spy</h1>
-
-    <div id="home-screen">
-        <button id="create-room-option">Create Room</button>
-        <button id="join-room-option">Join Room</button>
+    <h1>Who's the Spy</h1>
+    <div id="room-setup">
+        <input type="text" id="room-name" placeholder="Enter room name" />
+        <button id="create-room">Create Room</button>
+        <button id="join-room">Join Room</button>
     </div>
-
-    <div id="create-room-screen" class="hidden">
-        <h2>Create Room</h2>
-        <input type="text" id="room-name" placeholder="Room Name" required>
-        <button id="create-room-btn">Create Room</button>
-        <button id="back-to-home-btn-create">Back</button>
-    </div>
-
-    <div id="join-room-screen" class="hidden">
-        <h2>Available Rooms</h2>
-        <div id="rooms"></div>
-        <button id="back-to-home-btn-join">Back</button>
-    </div>
-
-    <div id="game-room" class="hidden">
-        <h2 id="room-title"></h2>
-        <textarea id="message" placeholder="Enter your message"></textarea>
-        <button id="send-message-btn">Send Message</button>
-        <div id="message-board">
-            <h3>Messages:</h3>
-            <div id="messages"></div>
+    <div id="game" class="hidden">
+        <h2>Room: <span id="room-display"></span></h2>
+        <button id="start-game">Start Game</button>
+        <div id="message-container" class="hidden">
+            <input type="text" id="message" placeholder="Enter your message" />
+            <button id="send-message">Send Message</button>
         </div>
     </div>
 
-    <script type="module" src="game.js"></script>
+    <script src="game.js"></script>
 </body>
 </html>
