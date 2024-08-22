@@ -1,0 +1,86 @@
+/* Spy-Themed Styles */
+
+body {
+    background-color: #1a1a1d;
+    color: #e3e3e3;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    background-color: #2c2c34;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 400px;
+    text-align: center;
+}
+
+input[type="text"], input[type="password"] {
+    background-color: #3a3a42;
+    border: none;
+    color: #e3e3e3;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #6c757d;
+    color: #e3e3e3;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #495057;
+}
+
+.hidden {
+    display: none;
+}
+
+#room-display {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+#message-container {
+    margin-top: 20px;
+}
+
+#message {
+    background-color: #3a3a42;
+    border: none;
+    color: #e3e3e3;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.alert {
+    background-color: #dc3545;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+    display: none;
+}
+
+#start-game, #send-message {
+    background-color: #007bff;
+}
+
+#start-game:hover, #send-message:hover {
+    background-color: #0056b3;
+}
