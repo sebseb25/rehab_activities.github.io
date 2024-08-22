@@ -68,7 +68,7 @@ document.getElementById('start-game').addEventListener('click', async () => {
         message: ''
     });
 
-    // Remove the notification of who the spy is
+    // Removed notification of who the spy is
     isGameStarted = true; // Set the flag to true when the game starts
     document.getElementById('message-container').classList.remove('hidden');
 });
@@ -92,11 +92,11 @@ function listenForUpdates(roomId) {
     db.collection('rooms').doc(roomId).onSnapshot((doc) => {
         if (doc.exists) {  // Check if the document exists
             const data = doc.data();
-            // Safely check if 'message' and 'spy' exist before accessing them
-            if (data && typeof data.message !== 'undefined' && typeof data.spy !== 'undefined') {
+            // Safely check if 'message' exists before accessing it
+            if (data && typeof data.message !== 'undefined') {
                 alert(`New message: ${data.message}`);
             } else {
-                console.warn("Message or spy data is undefined.");
+                console.warn("Message data is undefined.");
             }
         } else {
             console.error("No such document!");
