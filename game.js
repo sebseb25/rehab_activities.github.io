@@ -1,6 +1,5 @@
-import { getDatabase, ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js";
-
-const database = getDatabase(); // Get the database instance after the app has been initialized
+import { database } from './firebase.js'; // Import the initialized database
+import { ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/9.1.2/firebase-database.js";
 
 let currentPlayer = null;
 let currentRoomName = null;
@@ -136,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('home-screen').classList.remove('hidden');
     });
 
-    // Back button for join room screen
+    // Event listener for back button in join room screen
     document.getElementById('back-to-home-btn-join').addEventListener('click', function() {
         document.getElementById('join-room-screen').classList.add('hidden');
         document.getElementById('home-screen').classList.remove('hidden');
