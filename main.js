@@ -1,11 +1,11 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
+    authDomain: "rehab-activities.firebaseapp.com",
+    projectId: "rehab-activities",
+    storageBucket: "rehab-activities.appspot.com",
+    messagingSenderId: "96878771621",
+    appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4c"
 };
 
 // Initialize Firebase
