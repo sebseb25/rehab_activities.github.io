@@ -107,16 +107,13 @@ function listenForUpdates(roomId) {
     db.collection('rooms').doc(roomId).onSnapshot((doc) => {
         if (doc.exists) {  // Check if the document exists
             const data = doc.data();
-            // Safely check if 'message' exists before accessing it
-            if (data && typeof data.message !== 'undefined') {
-                // Check if the current user is not the spy
-                if (currentUser !== data.spy) {
-                    // Display the message in the UI
-                    const messagesDiv = document.getElementById('messages');
-                    const newMessage = document.createElement('div');
-                    newMessage.textContent = `New message: ${data.message}`;
-                    messagesDiv.appendChild(newMessage);
-                }
+            // Check if the current user is not the spy
+            if (currentUser !== data.spy) {
+                // Display the message in the UI
+                const messagesDiv = document.getElementById('messages');
+                const newMessage = document.createElement('div');
+                newMessage.textContent = `New message: ${data.message}`;
+                messagesDiv.appendChild(newMessage);
             }
         }
     });
