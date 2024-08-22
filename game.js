@@ -1,91 +1,59 @@
-import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
-
-const db = getFirestore(); // Initialize Firestore
-
-let currentPlayer = null;
-let currentRoomName = null;
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Event listener for "Create Room" button on home screen
-    document.getElementById('create-room-option').addEventListener('click', function() {
-        document.getElementById('home-screen').classList.add('hidden');
-        document.getElementById('create-room-screen').classList.remove('hidden');
-    });
-
-    // Event listener for "Join Room" button on home screen
-    document.getElementById('join-room-option').addEventListener('click', function() {
-        document.getElementById('home-screen').classList.add('hidden');
-        document.getElementById('join-room-screen').classList.remove('hidden');
-        showAvailableRooms();
-    });
-
-    // Function to display available rooms
-    async function showAvailableRooms() {
-        const roomListDiv = document.getElementById('rooms');
-        roomListDiv.innerHTML = ''; // Clear previous rooms
-
-        const querySnapshot = await getDocs(collection(db, "rooms"));
-        if (querySnapshot.empty) {
-            roomListDiv.innerHTML = '<p>No rooms available.</p>';
-            return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Who is the Spy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
         }
-
-        querySnapshot.forEach((doc) => {
-            const roomButton = document.createElement('button');
-            roomButton.textContent = doc.id;
-            roomButton.classList.add('room');
-            roomButton.addEventListener('click', function() {
-                joinRoom(doc.id);
-            });
-            roomListDiv.appendChild(roomButton);
-        });
-    }
-
-    // Event listener for creating a room
-    document.getElementById('create-room-btn').addEventListener('click', async function() {
-        const roomName = document.getElementById('room-name').value.trim();
-        if (!roomName) {
-            alert('Please enter a room name');
-            return;
+        .hidden {
+            display: none;
         }
-
-        // Create room in Firestore
-        try {
-            await addDoc(collection(db, "rooms"), { players: [] });
-            alert(`Room "${roomName}" created!`);
-            document.getElementById('room-name').value = ''; // Clear input
-            document.getElementById('create-room-screen').classList.add('hidden');
-            document.getElementById('home-screen').classList.remove('hidden'); // Return to home screen
-        } catch (e) {
-            alert('Error creating room: ' + e.message);
+        .room {
+            margin: 10px;
         }
-    });
+    </style>
+</head>
+<body>
+    <h1>Who is the Spy</h1>
 
-    // Function to join a room
-    async function joinRoom(roomName) {
-        const playerName = prompt('Enter your name:');
-        if (!playerName) {
-            alert('You must enter a name to join the room');
-            return;
-        }
+    <div id="home-screen">
+        <button id="create-room-option">Create Room</button>
+        <button id="join-room-option">Join Room</button>
+    </div>
 
-        // Add player to the room in Firestore
-        const roomRef = doc(db, "rooms", roomName);
-        await updateDoc(roomRef, {
-            players: arrayUnion(playerName)
-        });
+    <div id="create-room-screen" class="hidden">
+        <h2>Create Room</h2>
+        <input type="text" id="room-name" placeholder="Room Name" required>
+        <button id="create-room-btn">Create Room</button>
+        <button id="back-to-home-btn-create">Back</button>
+    </div>
 
-        currentPlayer = playerName;
-        currentRoomName = roomName;
+    <div id="join-room-screen" class="hidden">
+        <h2>Available Rooms</h2>
+        <div id="rooms"></div>
+        <button id="back-to-home-btn-join">Back</button>
+    </div>
 
-        document.getElementById('join-room-screen').classList.add('hidden');
-        document.getElementById('game-room').classList.remove('hidden');
-        document.getElementById('room-title').textContent = `Room: ${roomName}`;
+    <div id="game-room" class="hidden">
+        <h2 id="room-title"></h2>
+        <textarea id="message" placeholder="Enter your message"></textarea>
+        <button id="send-message-btn">Send Message</button>
+        <div id="message-board">
+            <h3>Messages:</h3>
+            <div id="messages"></div>
+        </div>
+    </div>
 
-        // Listen for messages in the room
-        listenForMessages(roomName);
-    }
-
-    // Listen for messages in the room
-    function listenForMessages(roomName) {
-        const
+    <script type="module">
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId:
