@@ -15,6 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app); // Initialize Firestore
 
+// Your existing code for handling room creation, joining, and messaging
 let currentPlayer = null;
 let currentRoomName = null;
 
