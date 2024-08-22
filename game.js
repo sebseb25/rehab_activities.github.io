@@ -1,7 +1,6 @@
-// Import Firebase modules
-import { getDatabase, ref, set, get, child, onValue, push } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js";
+import { getFirestore, collection, addDoc, getDocs, onSnapshot, doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
-const database = getDatabase(); // Initialize database here
+const db = getFirestore(); // Initialize Firestore
 
 let currentPlayer = null;
 let currentRoomName = null;
@@ -21,104 +20,96 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Function to display available rooms
-    function showAvailableRooms() {
+    async function showAvailableRooms() {
         const roomListDiv = document.getElementById('rooms');
         roomListDiv.innerHTML = ''; // Clear previous rooms
 
-        const roomsRef = ref(database, 'rooms');
-        onValue(roomsRef, (snapshot) => {
-            const roomsData = snapshot.val();
-            if (roomsData) {
-                for (const roomName in roomsData) {
-                    const roomButton = document.createElement('button');
-                    roomButton.textContent = roomName;
-                    roomButton.classList.add('room');
-                    roomButton.addEventListener('click', function() {
-                        joinRoom(roomName);
-                    });
-                    roomListDiv.appendChild(roomButton);
-                }
-            } else {
-                roomListDiv.innerHTML = '<p>No rooms available.</p>';
-            }
+        const querySnapshot = await getDocs(collection(db, "rooms"));
+        if (querySnapshot.empty) {
+            roomListDiv.innerHTML = '<p>No rooms available.</p>';
+            return;
+        }
+
+        querySnapshot.forEach((doc) => {
+            const roomButton = document.createElement('button');
+            roomButton.textContent = doc.id;
+            roomButton.classList.add('room');
+            roomButton.addEventListener('click', function() {
+                joinRoom(doc.id);
+            });
+            roomListDiv.appendChild(roomButton);
         });
     }
 
     // Event listener for creating a room
-    document.getElementById('create-room-btn').addEventListener('click', function() {
+    document.getElementById('create-room-btn').addEventListener('click', async function() {
         const roomName = document.getElementById('room-name').value.trim();
         if (!roomName) {
             alert('Please enter a room name');
             return;
         }
 
-        // Check if room already exists in Firebase
-        const roomRef = ref(database, 'rooms/' + roomName);
-        get(roomRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                alert('Room already exists. Choose a different name.');
-                return;
-            }
-
-            // Create room in Firebase
-            set(roomRef, { players: [] });
+        // Create room in Firestore
+        try {
+            await addDoc(collection(db, "rooms"), { players: [] });
             alert(`Room "${roomName}" created!`);
             document.getElementById('room-name').value = ''; // Clear input
             document.getElementById('create-room-screen').classList.add('hidden');
             document.getElementById('home-screen').classList.remove('hidden'); // Return to home screen
-        });
+        } catch (e) {
+            alert('Error creating room: ' + e.message);
+        }
     });
 
     // Function to join a room
-    function joinRoom(roomName) {
+    async function joinRoom(roomName) {
         const playerName = prompt('Enter your name:');
         if (!playerName) {
             alert('You must enter a name to join the room');
             return;
         }
 
-        // Add player to the room in Firebase
-        const playersRef = ref(database, 'rooms/' + roomName + '/players');
-        push(playersRef, playerName).then(() => {
-            currentPlayer = playerName;
-            currentRoomName = roomName;
-
-            document.getElementById('join-room-screen').classList.add('hidden');
-            document.getElementById('game-room').classList.remove('hidden');
-            document.getElementById('room-title').textContent = `Room: ${roomName}`;
-
-            // Listen for messages in the room
-            listenForMessages(roomName);
+        // Add player to the room in Firestore
+        const roomRef = doc(db, "rooms", roomName);
+        await updateDoc(roomRef, {
+            players: arrayUnion(playerName)
         });
+
+        currentPlayer = playerName;
+        currentRoomName = roomName;
+
+        document.getElementById('join-room-screen').classList.add('hidden');
+        document.getElementById('game-room').classList.remove('hidden');
+        document.getElementById('room-title').textContent = `Room: ${roomName}`;
+
+        // Listen for messages in the room
+        listenForMessages(roomName);
     }
 
     // Listen for messages in the room
     function listenForMessages(roomName) {
-        const messagesRef = ref(database, 'rooms/' + roomName + '/messages');
-        onValue(messagesRef, (snapshot) => {
-            const messagesData = snapshot.val();
-            if (messagesData) {
-                const messageDiv = document.getElementById('messages');
-                messageDiv.innerHTML = ''; // Clear previous messages
-                for (const messageId in messagesData) {
-                    const message = messagesData[messageId];
-                    displayMessage(message.player, message.message);
+        const messagesRef = collection(db, "rooms", roomName, "messages");
+        onSnapshot(messagesRef, (snapshot) => {
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    const messageData = change.doc.data();
+                    displayMessage(messageData.player, messageData.message);
                 }
-            }
+            });
         });
     }
 
     // Event listener for sending a message
-    document.getElementById('send-message-btn').addEventListener('click', function() {
+    document.getElementById('send-message-btn').addEventListener('click', async function() {
         const message = document.getElementById('message').value.trim();
         if (!message) {
             alert('Please enter a message');
             return;
         }
 
-        // Send message to Firebase
-        const messagesRef = ref(database, 'rooms/' + currentRoomName + '/messages');
-        push(messagesRef, {
+        // Send message to Firestore
+        const messagesRef = collection(db, "rooms", currentRoomName, "messages");
+        await addDoc(messagesRef, {
             player: currentPlayer,
             message: message
         });
