@@ -93,5 +93,14 @@ function listenForUpdates(roomId) {
     db.collection('rooms').doc(roomId).onSnapshot((doc) => {
         if (doc.exists) {  // Check if the document exists
             const data = doc.data();
-            if (data && data.message && data.spy) {
-                alert(`New
+            // Safely check if 'message' and 'spy' exist before accessing them
+            if (data && typeof data.message !== 'undefined' && typeof data.spy !== 'undefined') {
+                alert(`New message: ${data.message}`);
+            } else {
+                console.warn("Message or spy data is undefined.");
+            }
+        } else {
+            console.error("No such document!");
+        }
+    });
+}
