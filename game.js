@@ -117,12 +117,7 @@ function listenForUpdates(roomId) {
                     newMessage.textContent = `New message: ${data.message}`;
                     messagesDiv.appendChild(newMessage);
                 }
-            } else {
-                console.warn("Message data is undefined.");
             }
-        } else {
-            console.error("No such document!");
         }
     });
 }
-
