@@ -1,0 +1,44 @@
+body {
+    background-color: #1a1a1a; /* Dark background */
+    color: #f0f0f0; /* Light text for contrast */
+    font-family: 'Roboto', sans-serif; /* Main font */
+    text-align: center;
+}
+
+h1, h2 {
+    color: #ffcc00; /* Accent color for headings */
+}
+
+button {
+    background-color: #333; /* Dark button background */
+    color: #ffcc00; /* Light button text */
+    border: 2px solid #ffcc00; /* Button border */
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+button:hover {
+    background-color: #ffcc00; /* Change on hover */
+    color: #333; /* Dark text on hover */
+}
+
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ffcc00;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.message-container {
+    background-color: #444; /* Darker area for messages */
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+/* Hide elements by default */
+.hidden {
+    display: none;
+}
