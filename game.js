@@ -13,15 +13,16 @@ const db = firebase.firestore();
 let roomId;
 let isGameStarted = false; // Flag to check if the game has started
 let spy = ''; // Variable to hold the spy's identity
+let currentUser; // Variable to hold the current user's name
 
 // Create Room
 document.getElementById('create-room').addEventListener('click', async () => {
     const roomName = document.getElementById('room-name').value;
-    const playerName = prompt("Enter your name:");
+    currentUser = prompt("Enter your name:");
 
     const roomRef = await db.collection('rooms').add({
         name: roomName,
-        players: [playerName], // Add the creator to players
+        players: [currentUser], // Add the creator to players
         message: '',
         spy: ''
     });
@@ -29,6 +30,9 @@ document.getElementById('create-room').addEventListener('click', async () => {
     document.getElementById('room-display').innerText = roomName;
     document.getElementById('room-setup').classList.add('hidden');
     document.getElementById('game').classList.remove('hidden');
+
+    // Show the "Start Game" button only for the creator
+    document.getElementById('start-game').classList.remove('hidden');
 
     // Listen for updates after room creation
     listenForUpdates(roomId);
@@ -40,14 +44,17 @@ document.getElementById('join-room').addEventListener('click', async () => {
     const roomSnapshot = await db.collection('rooms').where('name', '==', roomName).get();
     if (!roomSnapshot.empty) {
         roomId = roomSnapshot.docs[0].id;
-        const playerName = prompt("Enter your name:");
+        currentUser = prompt("Enter your name:");
         const roomRef = db.collection('rooms').doc(roomId);
         await roomRef.update({
-            players: firebase.firestore.FieldValue.arrayUnion(playerName) // Add the player to the array
+            players: firebase.firestore.FieldValue.arrayUnion(currentUser) // Add the player to the array
         });
         document.getElementById('room-display').innerText = roomName;
         document.getElementById('room-setup').classList.add('hidden');
         document.getElementById('game').classList.remove('hidden');
+
+        // Hide the "Start Game" button for players who did not create the room
+        document.getElementById('start-game').classList.add('hidden');
 
         // Listen for updates after joining the room
         listenForUpdates(roomId);
@@ -61,8 +68,11 @@ document.getElementById('start-game').addEventListener('click', async () => {
     const roomRef = db.collection('rooms').doc(roomId);
     const playersSnapshot = await roomRef.get();
     const players = playersSnapshot.data().players;
-    const spyIndex = Math.floor(Math.random() * players.length);
-    spy = players[spyIndex];
+
+    // Filter out the game creator from the list of possible spies
+    const possibleSpies = players.filter(player => player !== currentUser);
+    const spyIndex = Math.floor(Math.random() * possibleSpies.length);
+    spy = possibleSpies[spyIndex];
 
     await roomRef.update({
         spy: spy,
@@ -94,7 +104,7 @@ document.getElementById('send-message').addEventListener('click', async () => {
 
     // Loop through players to simulate sending messages
     players.forEach(player => {
-        if (player !== spy) {
+        if (player !== spy && player !== currentUser) { // Only notify non-spy players and not the sender
             alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
         }
     });
@@ -110,8 +120,8 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                // Only show message if the user is not the spy
-                if (data.spy !== spy) {
+                // Only show message if the user is not the spy and not the sender
+                if (data.spy !== spy && currentUser !== spy) {
                     alert(`New message: ${data.message}`);
                 }
             } else {
