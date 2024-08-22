@@ -83,18 +83,25 @@ document.getElementById('send-message').addEventListener('click', async () => {
 
     const message = document.getElementById('message').value;
     const roomRef = db.collection('rooms').doc(roomId);
+
+    // Update the message in Firestore
     await roomRef.update({
         message: message
     });
-    
+
     // Notify all players except the spy
     const playersSnapshot = await roomRef.get();
     const players = playersSnapshot.data().players;
+
+    // Loop through players to simulate sending messages
     players.forEach(player => {
         if (player !== spy) {
             alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
         }
     });
+
+    // Clear the message input after sending
+    document.getElementById('message').value = '';
 });
 
 // Listen for updates function
@@ -104,7 +111,10 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                alert(`New message: ${data.message}`);
+                // Only show message if the user is not the spy
+                if (data.spy !== spy) {
+                    alert(`New message: ${data.message}`);
+                }
             } else {
                 console.warn("Message data is undefined.");
             }
