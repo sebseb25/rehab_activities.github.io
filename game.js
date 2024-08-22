@@ -1,20 +1,7 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js";
+// Import Firebase modules
+import { getDatabase, ref, set, get, child, onValue, push } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js";
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
-    authDomain: "rehab-activities.firebaseapp.com",
-    projectId: "rehab-activities",
-    storageBucket: "rehab-activities.appspot.com",
-    messagingSenderId: "96878771621",
-    appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4c"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+const database = getDatabase(); // Initialize database here
 
 let currentPlayer = null;
 let currentRoomName = null;
@@ -38,7 +25,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const roomListDiv = document.getElementById('rooms');
         roomListDiv.innerHTML = ''; // Clear previous rooms
 
-        onValue(ref(database, 'rooms'), (snapshot) => {
+        const roomsRef = ref(database, 'rooms');
+        onValue(roomsRef, (snapshot) => {
             const roomsData = snapshot.val();
             if (roomsData) {
                 for (const roomName in roomsData) {
@@ -65,14 +53,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Check if room already exists in Firebase
-        get(ref(database, 'rooms/' + roomName)).then((snapshot) => {
+        const roomRef = ref(database, 'rooms/' + roomName);
+        get(roomRef).then((snapshot) => {
             if (snapshot.exists()) {
                 alert('Room already exists. Choose a different name.');
                 return;
             }
 
             // Create room in Firebase
-            set(ref(database, 'rooms/' + roomName), { players: [] });
+            set(roomRef, { players: [] });
             alert(`Room "${roomName}" created!`);
             document.getElementById('room-name').value = ''; // Clear input
             document.getElementById('create-room-screen').classList.add('hidden');
@@ -89,7 +78,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Add player to the room in Firebase
-        push(ref(database, 'rooms/' + roomName + '/players'), playerName).then(() => {
+        const playersRef = ref(database, 'rooms/' + roomName + '/players');
+        push(playersRef, playerName).then(() => {
             currentPlayer = playerName;
             currentRoomName = roomName;
 
@@ -104,11 +94,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Listen for messages in the room
     function listenForMessages(roomName) {
-        onValue(ref(database, 'rooms/' + roomName + '/messages'), (snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-                const messageData = childSnapshot.val();
-                displayMessage(messageData.player, messageData.message);
-            });
+        const messagesRef = ref(database, 'rooms/' + roomName + '/messages');
+        onValue(messagesRef, (snapshot) => {
+            const messagesData = snapshot.val();
+            if (messagesData) {
+                const messageDiv = document.getElementById('messages');
+                messageDiv.innerHTML = ''; // Clear previous messages
+                for (const messageId in messagesData) {
+                    const message = messagesData[messageId];
+                    displayMessage(message.player, message.message);
+                }
+            }
         });
     }
 
@@ -121,7 +117,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Send message to Firebase
-        push(ref(database, 'rooms/' + currentRoomName + '/messages'), {
+        const messagesRef = ref(database, 'rooms/' + currentRoomName + '/messages');
+        push(messagesRef, {
             player: currentPlayer,
             message: message
         });
