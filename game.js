@@ -1,3 +1,7 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, push, get } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js";
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
@@ -9,8 +13,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 let currentPlayer = null;
 let currentRoomName = null;
@@ -34,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const roomListDiv = document.getElementById('rooms');
         roomListDiv.innerHTML = ''; // Clear previous rooms
 
-        database.ref('rooms').on('value', (snapshot) => {
+        onValue(ref(database, 'rooms'), (snapshot) => {
             const roomsData = snapshot.val();
             if (roomsData) {
                 for (const roomName in roomsData) {
@@ -61,14 +65,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Check if room already exists in Firebase
-        database.ref('rooms/' + roomName).once('value', (snapshot) => {
+        get(ref(database, 'rooms/' + roomName)).then((snapshot) => {
             if (snapshot.exists()) {
                 alert('Room already exists. Choose a different name.');
                 return;
             }
 
             // Create room in Firebase
-            database.ref('rooms/' + roomName).set({ players: [] });
+            set(ref(database, 'rooms/' + roomName), { players: [] });
             alert(`Room "${roomName}" created!`);
             document.getElementById('room-name').value = ''; // Clear input
             document.getElementById('create-room-screen').classList.add('hidden');
@@ -85,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Add player to the room in Firebase
-        database.ref('rooms/' + roomName + '/players').push(playerName).then(() => {
+        push(ref(database, 'rooms/' + roomName + '/players'), playerName).then(() => {
             currentPlayer = playerName;
             currentRoomName = roomName;
 
@@ -100,9 +104,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Listen for messages in the room
     function listenForMessages(roomName) {
-        database.ref('rooms/' + roomName + '/messages').on('child_added', (snapshot) => {
-            const messageData = snapshot.val();
-            displayMessage(messageData.player, messageData.message);
+        onValue(ref(database, 'rooms/' + roomName + '/messages'), (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                const messageData = childSnapshot.val();
+                displayMessage(messageData.player, messageData.message);
+            });
         });
     }
 
@@ -115,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Send message to Firebase
-        database.ref('rooms/' + currentRoomName + '/messages').push({
+        push(ref(database, 'rooms/' + currentRoomName + '/messages'), {
             player: currentPlayer,
             message: message
         });
