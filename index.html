@@ -50,15 +50,10 @@
     </div>
 
     <script type="module">
-        // Import Firebase libraries
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
-        import { getDatabase } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-database.js";
-
         // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
             projectId: "YOUR_PROJECT_ID",
             storageBucket: "YOUR_PROJECT_ID.appspot.com",
             messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
@@ -66,11 +61,13 @@
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.20.0/firebase-firestore.js";
 
-        // Import game.js as a module
-        import './game.js';
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app); // Initialize Firestore
     </script>
+    
+    <script type="module" src="game.js"></script>
 </body>
 </html>
