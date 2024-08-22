@@ -3,29 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>Who's the Spy?</title>
+    <title>Who's the Spy</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <style>
+        /* Add your styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>Who's the Spy?</h1>
-        <div id="room-setup">
-            <input type="text" id="room-name" placeholder="Enter Room Name" />
-            <button id="create-room">Create Room</button>
-            <button id="join-room">Join Room</button>
-        </div>
-        <div id="game" class="hidden">
-            <h2>Room: <span id="room-display"></span></h2>
-            <button id="start-game" class="hidden">Start Game</button>
-            <div id="message-container" class="hidden">
-                <input type="text" id="message" placeholder="Type your message" />
-                <button id="send-message">Send</button>
-            </div>
+    <h1>Who's the Spy</h1>
+    <div id="room-setup">
+        <input type="text" id="room-name" placeholder="Enter room name" />
+        <button id="create-room">Create Room</button>
+        <button id="join-room">Join Room</button>
+    </div>
+    <div id="game" class="hidden">
+        <h2>Room: <span id="room-display"></span></h2>
+        <button id="start-game">Start Game</button>
+        <div id="message-container" class="hidden">
+            <input type="text" id="message" placeholder="Enter your message" />
+            <button id="send-message">Send Message</button>
         </div>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js"></script>
+
     <script src="game.js"></script>
 </body>
 </html>
