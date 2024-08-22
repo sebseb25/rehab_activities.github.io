@@ -1,22 +1,15 @@
-
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-
 // Firebase configuration
 const firebaseConfig = {
-   apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
-   authDomain: "rehab-activities.firebaseapp.com",
-   projectId: "rehab-activities",
-   storageBucket: "rehab-activities.appspot.com",
-   messagingSenderId: "96878771621",
-   appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4c",
-   measurementId: "G-15XKPPZ721"
+    apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
+    authDomain: "rehab-activities.firebaseapp.com",
+    projectId: "rehab-activities",
+    storageBucket: "rehab-activities.appspot.com",
+    messagingSenderId: "96878771621",
+    appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4c"
 };
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
-console.log("Firebase initialized"); // Add this line to check
-
 const auth = firebase.auth();
 const db = firebase.firestore();
 
