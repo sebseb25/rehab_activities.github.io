@@ -125,7 +125,7 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                // Only show message if the user is not the spy
+                // Only show message if the user is not the spy and the user is not the sender
                 if (currentUser !== spy) {
                     alert(`New message: ${data.message}`); // Notify non-spy players of new messages
                 }
