@@ -98,17 +98,6 @@ document.getElementById('send-message').addEventListener('click', async () => {
         message: message
     });
 
-    // Notify all players except the spy
-    const playersSnapshot = await roomRef.get();
-    const players = playersSnapshot.data().players;
-
-    // Loop through players to simulate sending messages
-    players.forEach(player => {
-        if (player !== spy && player !== currentUser) { // Only notify non-spy players and not the sender
-            alert(`Message to ${player}: ${message}`); // Simulate sending message to non-spy players
-        }
-    });
-
     // Clear the message input after sending
     document.getElementById('message').value = '';
 });
@@ -120,9 +109,10 @@ function listenForUpdates(roomId) {
             const data = doc.data();
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
-                // Only show message if the user is not the spy and not the sender
-                if (data.spy !== spy && currentUser !== spy) {
-                    alert(`New message: ${data.message}`);
+                // Only show message if the user is not the spy
+                if (currentUser !== spy) {
+                    // Here you can handle displaying the message in your UI instead of an alert
+                    console.log(`New message: ${data.message}`); // Simulate sending message to non-spy players
                 }
             } else {
                 console.warn("Message data is undefined.");
