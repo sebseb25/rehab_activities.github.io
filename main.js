@@ -40,8 +40,6 @@ document.getElementById('createRoomBtn').addEventListener('click', () => {
     }).then(() => {
         document.getElementById('roomCode').textContent = `Room Code: ${roomCode}`;
         document.getElementById('startGame').style.display = 'block';
-    }).catch((error) => {
-        console.error("Error creating room: ", error);
     });
 });
 
@@ -65,8 +63,6 @@ document.getElementById('joinRoomBtn').addEventListener('click', () => {
                 roomData.participants.push(newParticipant);
                 db.collection('rooms').doc(roomCode).update({
                     participants: roomData.participants
-                }).catch((error) => {
-                    console.error("Error updating participants: ", error);
                 });
             }
 
@@ -77,8 +73,6 @@ document.getElementById('joinRoomBtn').addEventListener('click', () => {
         } else {
             alert("Room does not exist!");
         }
-    }).catch((error) => {
-        console.error("Error joining room: ", error);
     });
 });
 
@@ -91,11 +85,6 @@ function displayParticipants(participants) {
         participantList.appendChild(listItem);
     });
 
-    // Clear previous list if it exists
-    const existingList = document.querySelector('ul');
-    if (existingList) {
-        existingList.remove();
-    }
     document.body.appendChild(participantList);
 }
 
@@ -113,12 +102,8 @@ document.getElementById('startGameBtn').addEventListener('click', () => {
             db.collection('rooms').doc(roomCode).update({
                 spyId: spyId,
                 spyAssigned: true
-            }).catch((error) => {
-                console.error("Error assigning spy: ", error);
             });
         }
-    }).catch((error) => {
-        console.error("Error starting game: ", error);
     });
 });
 
@@ -142,14 +127,10 @@ document.getElementById('sendMessageBtn').addEventListener('click', () => {
                         senderName: sender.name,
                         message: message,
                         timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).catch((error) => {
-                        console.error("Error sending message: ", error);
                     });
                 }
             });
         }
-    }).catch((error) => {
-        console.error("Error fetching room data: ", error);
     });
 });
 
