@@ -1,11 +1,11 @@
 // Initialize Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
-    authDomain: "rehab-activities.firebaseapp.com",
-    projectId: "rehab-activities",
-    storageBucket: "rehab-activities.appspot.com",
-    messagingSenderId: "96878771621",
-    appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
+  apiKey: "AIzaSyDdMQVAcHMJC6fTd5Q05hCsDvi9FFaDW-M",
+  authDomain: "rehab-activities.firebaseapp.com",
+  projectId: "rehab-activities",
+  storageBucket: "rehab-activities.appspot.com",
+  messagingSenderId: "96878771621",
+  appId: "1:96878771621:web:931c27bf1eb4f9ca1dfc4"
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
@@ -17,114 +17,117 @@ let currentUser; // Variable to hold the current user's name
 
 // Create Room
 document.getElementById('create-room').addEventListener('click', async () => {
-    const roomName = document.getElementById('room-name').value;
-    currentUser = prompt("Enter your name:");
+  const roomName = document.getElementById('room-name').value;
+  currentUser = prompt("Enter your name:");
 
-    const roomRef = await db.collection('rooms').add({
-        name: roomName,
-        players: [currentUser], // Add the creator to players
-        message: '',
-        spy: ''
-    });
-    roomId = roomRef.id;
-    document.getElementById('room-display').innerText = roomName;
-    document.getElementById('room-setup').classList.add('hidden');
-    document.getElementById('game').classList.remove('hidden');
+  const roomRef = await db.collection('rooms').add({
+    name: roomName,
+    players: [currentUser], // Add the creator to players
+    message: '',
+    spy: ''
+  });
+  roomId = roomRef.id;
+  document.getElementById('room-display').innerText = roomName;
+  document.getElementById('room-setup').classList.add('hidden');
+  document.getElementById('game').classList.remove('hidden');
 
-    // Show the "Start Game" button only for the creator
-    document.getElementById('start-game').classList.remove('hidden');
+  // Show the "Start Game" button only for the creator
+  document.getElementById('start-game').classList.remove('hidden');
 
-    // Listen for updates after room creation
-    listenForUpdates(roomId);
+  // Listen for updates after room creation
+  listenForUpdates(roomId);
 });
 
 // Join Room
 document.getElementById('join-room').addEventListener('click', async () => {
-    const roomName = document.getElementById('room-name').value;
-    const roomSnapshot = await db.collection('rooms').where('name', '==', roomName).get();
-    if (!roomSnapshot.empty) {
-        roomId = roomSnapshot.docs[0].id;
-        currentUser = prompt("Enter your name:");
-        const roomRef = db.collection('rooms').doc(roomId);
-        await roomRef.update({
-            players: firebase.firestore.FieldValue.arrayUnion(currentUser) // Add the player to the array
-        });
-        document.getElementById('room-display').innerText = roomName;
-        document.getElementById('room-setup').classList.add('hidden');
-        document.getElementById('game').classList.remove('hidden');
+  const roomName = document.getElementById('room-name').value;
+  const roomSnapshot = await db.collection('rooms').where('name', '==', roomName).get();
+  if (!roomSnapshot.empty) {
+    roomId = roomSnapshot.docs[0].id;
+    currentUser = prompt("Enter your name:");
+    const roomRef = db.collection('rooms').doc(roomId);
+    await roomRef.update({
+      players: firebase.firestore.FieldValue.arrayUnion(currentUser) // Add the player to the array
+    });
+    document.getElementById('room-display').innerText = roomName;
+    document.getElementById('room-setup').classList.add('hidden');
+    document.getElementById('game').classList.remove('hidden');
 
-        // Hide the "Start Game" button for players who did not create the room
-        document.getElementById('start-game').classList.add('hidden');
+    // Hide the "Start Game" button for players who did not create the room
+    document.getElementById('start-game').classList.add('hidden');
 
-        // Listen for updates after joining the room
-        listenForUpdates(roomId);
-    } else {
-        alert('Room not found!');
-    }
+    // Listen for updates after joining the room
+    listenForUpdates(roomId);
+  } else {
+    alert('Room not found!');
+  }
 });
 
 // Start Game
 document.getElementById('start-game').addEventListener('click', async () => {
-    const roomRef = db.collection('rooms').doc(roomId);
-    const playersSnapshot = await roomRef.get();
-    const players = playersSnapshot.data().players;
+  const roomRef = db.collection('rooms').doc(roomId);
+  const playersSnapshot = await roomRef.get();
+  const players = playersSnapshot.data().players;
 
-    // Filter out the game creator from the list of possible spies
-    const possibleSpies = players.filter(player => player !== currentUser);
-    
-    // Randomly select a spy
-    if (possibleSpies.length > 0) {
-        const spyIndex = Math.floor(Math.random() * possibleSpies.length);
-        spy = possibleSpies[spyIndex];
-    }
+  // Filter out the game creator from the list of possible spies
+  const possibleSpies = players.filter(player => player !== currentUser);
 
-    await roomRef.update({
-        spy: spy,
-        message: ''
-    });
+  // Randomly select a spy
+  if (possibleSpies.length > 0) {
+    const spyIndex = Math.floor(Math.random() * possibleSpies.length);
+    spy = possibleSpies[spyIndex];
+  }
 
-    isGameStarted = true; // Set the flag to true when the game starts
-    document.getElementById('message-container').classList.remove('hidden');
+  await roomRef.update({
+    spy: spy,
+    message: ''
+  });
+
+  isGameStarted = true; // Set the flag to true when the game starts
+  document.getElementById('message-container').classList.remove('hidden');
 });
 
 // Send Message
 document.getElementById('send-message').addEventListener('click', async () => {
-    if (!isGameStarted) {
-        alert("The game hasn't started yet!");
-        return;
-    }
+  if (!isGameStarted) {
+    alert("The game hasn't started yet!");
+    return;
+  }
 
-    const message = document.getElementById('message').value;
-    const roomRef = db.collection('rooms').doc(roomId);
+  const message = document.getElementById('message').value;
+  const roomRef = db.collection('rooms').doc(roomId);
 
-    // Update the message in Firestore
-    await roomRef.update({
-        message: message
-    });
+  // Update the message in Firestore
+  await roomRef.update({
+    message: message
+  });
 
-    // Clear the message input after sending
-    document.getElementById('message').value = '';
+  // Clear the message input after sending
+  document.getElementById('message').value = '';
 });
 
 // Listen for updates function
 function listenForUpdates(roomId) {
-    db.collection('rooms').doc(roomId).onSnapshot((doc) => {
-        if (doc.exists) {  // Check if the document exists
-            const data = doc.data();
-            // Safely check if 'message' exists before accessing it
-            if (data && typeof data.message !== 'undefined') {
-                // Notify all players except the spy of new messages
-                if (currentUser !== spy) {
-                    console.log(`New message: ${data.message}`); // Display the message in your UI
-                } else {
-                    // Optional: Log for spy to show they won't see messages
-                    console.log("You are the spy and won't see the messages.");
-                }
-            } else {
-                console.warn("Message data is undefined.");
-            }
+  db.collection('rooms').doc(roomId).onSnapshot((doc) => {
+    if (doc.exists) { // Check if the document exists
+      const data = doc.data();
+      // Safely check if 'message' exists before accessing it
+      if (data && typeof data.message !== 'undefined') {
+        // Notify all players except the spy of new messages
+        if (currentUser !== spy) {
+          console.log(`New message: ${data.message}`); // Display the message in your UI
+          // Update the message container with the new message
+          const messageContainer = document.getElementById('message-container');
+          messageContainer.innerHTML += `<p>${data.message}</p>`;
         } else {
-            console.error("No such document!");
+          // Optional: Log for spy to show they won't see messages
+          console.log("You are the spy and won't see the messages.");
         }
-    });
+      } else {
+        console.warn("Message data is undefined.");
+      }
+    } else {
+      console.error("No such document!");
+    }
+  });
 }
