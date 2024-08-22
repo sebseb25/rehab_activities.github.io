@@ -99,12 +99,12 @@ document.getElementById('send-message').addEventListener('click', async () => {
         message: message
     });
 
+    // Clear the message input after sending
+    document.getElementById('message').value = '';
+
     // Notify all players except the spy and the sender
     const playersSnapshot = await roomRef.get();
     const players = playersSnapshot.data().players;
-
-    // Clear the message input after sending
-    document.getElementById('message').value = '';
 
     // Loop through players to simulate sending messages
     players.forEach(player => {
@@ -123,7 +123,7 @@ function listenForUpdates(roomId) {
             // Safely check if 'message' exists before accessing it
             if (data && typeof data.message !== 'undefined') {
                 // Only show message if the user is not the spy and not the sender
-                if (currentUser !== spy && currentUser !== data.sender) {
+                if (currentUser !== spy) {
                     alert(`New message: ${data.message}`);
                 }
             } else {
