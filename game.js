@@ -102,6 +102,9 @@ document.getElementById('send-message').addEventListener('click', async () => {
     message: message
   });
 
+  // Update the message container with the new message
+const messageContainer = document.getElementById('message-container');
+messageContainer.innerHTML += `<p>${data.message}</p>`;
   // Clear the message input after sending
   document.getElementById('message').value = '';
 });
