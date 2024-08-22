@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Who's the Spy8</title>
-    <!-- Load Firebase SDKs -->
+    <title>Who's the Spy</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -12,26 +11,6 @@
         /* Add your styles here */
         body {
             font-family: Arial, sans-serif;
-            background-color: #2C3E50; /* Dark background */
-            color: white; /* White text */
-            text-align: center;
-        }
-        input {
-            margin: 10px;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            background-color: #2980B9; /* Button color */
-            color: white;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #3498DB; /* Hover effect */
         }
         .hidden {
             display: none;
@@ -47,12 +26,13 @@
     </div>
     <div id="game" class="hidden">
         <h2>Room: <span id="room-display"></span></h2>
-        <button id="start-game" class="hidden">Start Game</button>
+        <button id="start-game">Start Game</button>
         <div id="message-container" class="hidden">
             <input type="text" id="message" placeholder="Enter your message" />
             <button id="send-message">Send Message</button>
         </div>
     </div>
+
     <script src="game.js"></script>
 </body>
 </html>
